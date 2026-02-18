@@ -13,11 +13,10 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# CORS — allow the React dev server
+# CORS — allow all origins (no auth needed)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
