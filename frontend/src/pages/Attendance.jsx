@@ -66,8 +66,15 @@ export default function Attendance() {
 
     // ── fetch history ──────────────────────────────
     const fetchHistory = async () => {
+        // Validate date range
+        if (startDate && endDate && startDate > endDate) {
+            setError("Start date cannot be after end date.");
+            return;
+        }
+
         setHistoryLoading(true);
         setSummary(null);
+        setError(null);
         try {
             const params = {};
             if (historyEmpId) params.employee_id = historyEmpId;
@@ -86,6 +93,32 @@ export default function Attendance() {
             setHistoryLoading(false);
         }
     };
+
+    // ── clear filters ────────────────────────────────
+    const clearFilters = () => {
+        setHistoryEmpId("");
+        setStartDate("");
+        setEndDate("");
+        setSummary(null);
+        setError(null);
+        // Re-fetch all records
+        setHistoryLoading(true);
+        getAttendance({})
+            .then(setHistory)
+            .catch((e) => setError(e.message))
+            .finally(() => setHistoryLoading(false));
+    };
+
+    // ── auto-load history when switching to history tab ──
+    useEffect(() => {
+        if (tab === "history") {
+            setHistoryLoading(true);
+            getAttendance({})
+                .then(setHistory)
+                .catch((e) => setError(e.message))
+                .finally(() => setHistoryLoading(false));
+        }
+    }, [tab]);
 
     // ── render ─────────────────────────────────────
     return (
@@ -124,6 +157,7 @@ export default function Attendance() {
                             type="date"
                             className="input--date"
                             value={markDate}
+                            max={todayStr()}
                             onChange={(e) => setMarkDate(e.target.value)}
                         />
                     </div>
@@ -162,8 +196,8 @@ export default function Attendance() {
                                                     <div className="toggle-group">
                                                         <button
                                                             className={`toggle-btn ${statuses[emp.employee_id] === "Present"
-                                                                    ? "toggle-btn--present"
-                                                                    : ""
+                                                                ? "toggle-btn--present"
+                                                                : ""
                                                                 }`}
                                                             onClick={() =>
                                                                 setStatuses({
@@ -176,8 +210,8 @@ export default function Attendance() {
                                                         </button>
                                                         <button
                                                             className={`toggle-btn ${statuses[emp.employee_id] === "Absent"
-                                                                    ? "toggle-btn--absent"
-                                                                    : ""
+                                                                ? "toggle-btn--absent"
+                                                                : ""
                                                                 }`}
                                                             onClick={() =>
                                                                 setStatuses({
@@ -235,6 +269,7 @@ export default function Attendance() {
                             <input
                                 type="date"
                                 value={startDate}
+                                max={endDate || todayStr()}
                                 onChange={(e) => setStartDate(e.target.value)}
                             />
                         </div>
@@ -243,11 +278,16 @@ export default function Attendance() {
                             <input
                                 type="date"
                                 value={endDate}
+                                min={startDate || undefined}
+                                max={todayStr()}
                                 onChange={(e) => setEndDate(e.target.value)}
                             />
                         </div>
                         <button className="btn btn--primary" onClick={fetchHistory}>
                             🔍 Search
+                        </button>
+                        <button className="btn btn--ghost" onClick={clearFilters}>
+                            ✕ Clear Filters
                         </button>
                     </div>
 
@@ -294,8 +334,8 @@ export default function Attendance() {
                                             <td>
                                                 <span
                                                     className={`chip ${rec.status === "Present"
-                                                            ? "chip--success"
-                                                            : "chip--danger"
+                                                        ? "chip--success"
+                                                        : "chip--danger"
                                                         }`}
                                                 >
                                                     {rec.status === "Present" ? "✅" : "❌"} {rec.status}
