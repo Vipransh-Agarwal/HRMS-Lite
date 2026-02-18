@@ -36,7 +36,18 @@ npm install
 npm run dev
 ```
 
-The app runs at `http://localhost:5173` and expects the backend at `http://localhost:8000`.
+The app runs at `http://localhost:5173` and connects to the backend at `http://localhost:8000` by default.
+
+## 🌐 Production (Vercel)
+
+Deployed on [Vercel](https://vercel.com) via GitHub integration:
+- **Root Directory**: `frontend`
+- **Framework Preset**: Vite (auto-detected)
+- **Build Command**: `npm run build`
+- **Output Directory**: `dist`
+- **Environment Variable**: `VITE_API_URL` — set to your Render backend URL + `/api`
+
+Vercel auto-deploys on every push to the connected GitHub branch.
 
 ## 🎨 Features
 
@@ -49,7 +60,7 @@ The app runs at `http://localhost:5173` and expects the backend at `http://local
 
 ## ⚠️ Assumptions & Limitations
 
-- The API base URL (`http://localhost:8000/api`) is hardcoded in `api.js` — update it for production deployment.
+- The API base URL defaults to `http://localhost:8000/api` for local development. In production, it is configured via the `VITE_API_URL` environment variable on Vercel.
 - No state management library — uses React's built-in `useState`/`useEffect`.
 - Date pickers use native HTML `<input type="date">` — appearance varies by browser.
 - No unit tests included — the app was verified via end-to-end manual testing.

@@ -63,7 +63,18 @@ npm run dev
 ```
 App runs at `http://localhost:5173`
 
-> See individual READMEs for more details:
+## 🌐 Production Deployment
+
+| Component | Platform | URL |
+|-----------|----------|-----|
+| Frontend | Vercel | Deployed via GitHub integration |
+| Backend | Render | Deployed via GitHub integration |
+| Database | Neon | Serverless PostgreSQL |
+
+- **Frontend** uses `VITE_API_URL` env variable in Vercel to point to the Render backend.
+- **Backend** uses `DATABASE_URL` env variable in Render to connect to Neon PostgreSQL.
+
+> See individual READMEs for deployment details:
 > - [Backend README](./backend/README.md)
 > - [Frontend README](./frontend/README.md)
 
@@ -77,4 +88,4 @@ App runs at `http://localhost:5173`
 
 ## 📜 License
 
-This project is for internal/educational use.
+This project is licensed under the [MIT License](./LICENSE).
