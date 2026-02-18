@@ -1,16 +1,59 @@
-# React + Vite
+# HRMS Lite — Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Single-page application for HRMS Lite, built with **React** and **Vite**.
 
-Currently, two official plugins are available:
+## 🛠️ Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+| Component | Technology |
+|-----------|-----------|
+| Framework | React 19 |
+| Build Tool | Vite 7 |
+| Routing | React Router v7 |
+| Styling | Vanilla CSS (custom dark theme) |
+| HTTP | Fetch API (centralized client) |
 
-## React Compiler
+## 📂 Structure
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```
+frontend/src/
+├── main.jsx             # React root mount
+├── App.jsx              # Sidebar layout + route definitions
+├── api.js               # Centralized API client (all endpoint wrappers)
+├── index.css            # Full dark theme design system
+└── pages/
+    ├── Dashboard.jsx    # Summary cards + department bar chart
+    ├── Employees.jsx    # Add form, roster table, delete
+    └── Attendance.jsx   # Daily bulk marking + history with filters
+```
 
-## Expanding the ESLint configuration
+## 🚀 Running Locally
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+# 1. Install dependencies
+npm install
+
+# 2. Start dev server
+npm run dev
+```
+
+The app runs at `http://localhost:5173` and expects the backend at `http://localhost:8000`.
+
+## 🎨 Features
+
+- **Dashboard** — 4 stat cards (total employees, present/absent today, departments) + horizontal bar chart
+- **Employees** — Slide-down add form, sortable roster table, delete with confirmation
+- **Attendance** — Tabbed UI:
+  - *Daily Marking* — Bulk Present/Absent toggle buttons with date picker
+  - *History* — Filter by employee & date range, per-employee summary strip, clear filters
+- **UI/UX** — Premium dark theme, loading spinners, empty states, error banners, slide animations, responsive sidebar
+
+## ⚠️ Assumptions & Limitations
+
+- The API base URL (`http://localhost:8000/api`) is hardcoded in `api.js` — update it for production deployment.
+- No state management library — uses React's built-in `useState`/`useEffect`.
+- Date pickers use native HTML `<input type="date">` — appearance varies by browser.
+- No unit tests included — the app was verified via end-to-end manual testing.
+
+---
+
+← Back to [Main README](../README.md)

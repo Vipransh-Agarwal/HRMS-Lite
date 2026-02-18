@@ -296,10 +296,10 @@ export default function Attendance() {
                         <div className="summary-strip">
                             <strong>{summary.full_name}</strong>
                             <span className="chip chip--success">
-                                ✅ {summary.total_present} Present
+                                ✅ {summary.total_present} days Present
                             </span>
                             <span className="chip chip--danger">
-                                ❌ {summary.total_absent} Absent
+                                ❌ {summary.total_absent} days Absent
                             </span>
                         </div>
                     )}
