@@ -84,7 +84,10 @@ export default function Attendance() {
             setHistory(recs);
 
             if (historyEmpId) {
-                const s = await getAttendanceSummary(historyEmpId);
+                const summaryParams = {};
+                if (startDate) summaryParams.start_date = startDate;
+                if (endDate) summaryParams.end_date = endDate;
+                const s = await getAttendanceSummary(historyEmpId, summaryParams);
                 setSummary(s);
             }
         } catch (e) {
@@ -301,6 +304,11 @@ export default function Attendance() {
                             <span className="chip chip--danger">
                                 ❌ {summary.total_absent} days Absent
                             </span>
+                            {summary.from_date && summary.to_date && (
+                                <span className="chip" style={{ opacity: 0.7 }}>
+                                    📅 {new Date(summary.from_date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })} – {new Date(summary.to_date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+                                </span>
+                            )}
                         </div>
                     )}
 

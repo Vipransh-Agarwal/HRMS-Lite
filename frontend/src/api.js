@@ -46,8 +46,10 @@ export const markAttendance = (payload) =>
 export const markAttendanceBulk = (payload) =>
     request("/attendance/bulk", { method: "POST", body: JSON.stringify(payload) });
 
-export const getAttendanceSummary = (employeeId) =>
-    request(`/attendance/summary/${employeeId}`);
+export const getAttendanceSummary = (employeeId, params = {}) => {
+    const qs = new URLSearchParams(params).toString();
+    return request(`/attendance/summary/${employeeId}${qs ? `?${qs}` : ""}`);
+};
 
 // ── Dashboard ────────────────────────────────────────
 

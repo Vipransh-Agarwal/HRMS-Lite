@@ -99,26 +99,46 @@ def list_attendance(
 
 
 @router.get("/summary/{employee_id}")
-def attendance_summary(employee_id: str, db: Session = Depends(get_db)):
-    """Get total present and absent counts for an employee."""
+def attendance_summary(
+    employee_id: str,
+    start_date: Optional[date] = Query(None),
+    end_date: Optional[date] = Query(None),
+    db: Session = Depends(get_db),
+):
+    """Get present/absent counts for an employee, optionally within a date range."""
     emp = db.query(Employee).filter(Employee.employee_id == employee_id).first()
     if not emp:
         raise HTTPException(status_code=404, detail=f"Employee '{employee_id}' not found.")
 
-    present = (
-        db.query(func.count(Attendance.id))
-        .filter(Attendance.employee_id == employee_id, Attendance.status == "Present")
-        .scalar()
+    present_q = db.query(func.count(Attendance.id)).filter(
+        Attendance.employee_id == employee_id, Attendance.status == "Present"
     )
-    absent = (
-        db.query(func.count(Attendance.id))
-        .filter(Attendance.employee_id == employee_id, Attendance.status == "Absent")
-        .scalar()
+    absent_q = db.query(func.count(Attendance.id)).filter(
+        Attendance.employee_id == employee_id, Attendance.status == "Absent"
     )
+
+    if start_date:
+        present_q = present_q.filter(Attendance.date >= start_date)
+        absent_q = absent_q.filter(Attendance.date >= start_date)
+    if end_date:
+        present_q = present_q.filter(Attendance.date <= end_date)
+        absent_q = absent_q.filter(Attendance.date <= end_date)
+
+    # Get actual date range from records
+    date_range_q = db.query(
+        func.min(Attendance.date), func.max(Attendance.date)
+    ).filter(Attendance.employee_id == employee_id)
+    if start_date:
+        date_range_q = date_range_q.filter(Attendance.date >= start_date)
+    if end_date:
+        date_range_q = date_range_q.filter(Attendance.date <= end_date)
+    min_date, max_date = date_range_q.first()
 
     return {
         "employee_id": employee_id,
         "full_name": emp.full_name,
-        "total_present": present,
-        "total_absent": absent,
+        "total_present": present_q.scalar(),
+        "total_absent": absent_q.scalar(),
+        "from_date": str(min_date) if min_date else None,
+        "to_date": str(max_date) if max_date else None,
     }
